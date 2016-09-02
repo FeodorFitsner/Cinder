@@ -31,7 +31,7 @@ std::shared_ptr<::WAVEFORMATEX> interleavedFloatWaveFormat( size_t sampleRate, s
 {
 	::WAVEFORMATEXTENSIBLE *wfx = (::WAVEFORMATEXTENSIBLE *)calloc( 1, sizeof( ::WAVEFORMATEXTENSIBLE ) );
 
-	wfx->Format.wFormatTag				= WAVE_FORMAT_EXTENSIBLE ;
+	wfx->Format.wFormatTag				= WAVE_FORMAT_EXTENSIBLE;
 	wfx->Format.nSamplesPerSec			= sampleRate;
 	wfx->Format.nChannels				= numChannels;
 	wfx->Format.wBitsPerSample			= 32;
@@ -43,6 +43,12 @@ std::shared_ptr<::WAVEFORMATEX> interleavedFloatWaveFormat( size_t sampleRate, s
 	wfx->dwChannelMask					= 0; // this could be a very complicated bit mask of channel order, but 0 means 'first channel is left, second channel is right, etc'
 
 	return std::shared_ptr<::WAVEFORMATEX>( (::WAVEFORMATEX *)wfx, free );
+}
+
+void copyWaveFormat( const ::WAVEFORMATEX &source, ::WAVEFORMATEX *dest )
+{
+	size_t sizeBytes = source.wFormatTag == WAVE_FORMAT_EXTENSIBLE ? sizeof( ::WAVEFORMATEXTENSIBLE ) : sizeof( ::WAVEFORMATEX );
+	memcpy( dest, &source, sizeBytes );
 }
 
 } } } // namespace cinder::audio::msw
