@@ -26,7 +26,7 @@
 
 namespace cinder { namespace audio { namespace msw {
 
-::WAVEFORMATEXTENSIBLE makeWaveFormat( SampleType sampleType, size_t sampleRate, size_t numChannels, size_t bitsPerSample )
+::WAVEFORMATEXTENSIBLE makeWaveFormat( SampleType sampleType, size_t sampleRate, size_t numChannels, size_t bitsPerSample, bool useExtensible )
 {
 	::WAVEFORMATEXTENSIBLE wfx;
 
@@ -43,7 +43,7 @@ namespace cinder { namespace audio { namespace msw {
 	wfx.SubFormat						= sampleType == SampleType::FLOAT_32 ? KSDATAFORMAT_SUBTYPE_IEEE_FLOAT : KSDATAFORMAT_SUBTYPE_PCM;
 	wfx.dwChannelMask					= 0; // use the default channel order ('no speaker location is desired on any of the mono streams')
 
-	wfx.Format.wFormatTag				= numChannels <= 2 && bitsPerSample <= 16 ? WAVE_FORMAT_PCM : WAVE_FORMAT_EXTENSIBLE;
+	wfx.Format.wFormatTag				= useExtensible ? WAVE_FORMAT_EXTENSIBLE : WAVE_FORMAT_PCM;
 	wfx.Format.nSamplesPerSec			= (DWORD)sampleRate;
 	wfx.Format.nChannels				= (WORD)numChannels;
 	wfx.Format.wBitsPerSample			= (WORD)bitsPerSample;
