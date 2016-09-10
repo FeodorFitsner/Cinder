@@ -39,7 +39,6 @@ class AudioExc : public Exception {
 	int32_t getCode() const						{ return mErrorCode; }
 
   protected:
-	std::string	mDescription;
 	int32_t		mErrorCode;
 };
 
