@@ -141,6 +141,10 @@ class DeviceManager : private Noncopyable {
 	void emitParamsWillChange( const DeviceRef &device );
 	void emitParamsDidChange( const DeviceRef &device );
 
+	//! Forces the cached samplerate and framesPerBlock values on a DeviceRef to be cleared so the next time they are
+	//! requested, the value comes from the DeviceManager impl
+	void clearCachedValues( const DeviceRef &device );
+
 	std::vector<DeviceRef> mDevices;
 };
 
