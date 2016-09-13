@@ -131,6 +131,7 @@ size_t OutputDeviceNode::getOutputSampleRate()
 
 size_t OutputDeviceNode::getOutputFramesPerBlock()
 {
+#if 0
 	if( mOutputFramesPerBlockDirty ) {
 		mOutputFramesPerBlock = getDevice()->getFramesPerBlock();
 		if( ! isPowerOf2( mOutputFramesPerBlock ) ) {
@@ -140,6 +141,9 @@ size_t OutputDeviceNode::getOutputFramesPerBlock()
 	}
 	
 	return mOutputFramesPerBlock;
+#else
+	return 512;
+#endif
 }
 
 string OutputDeviceNode::getName() const
