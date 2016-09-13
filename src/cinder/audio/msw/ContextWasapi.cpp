@@ -51,6 +51,8 @@
 
 //#define LOG_XRUN( stream )	CI_LOG_I( stream )
 #define LOG_XRUN( stream )	    ( (void)( 0 ) )
+//#define LOG_AUDIOCLIENT( stream )  CI_LOG_I( stream ) 
+#define LOG_AUDIOCLIENT( stream )      ( (void)( 0 ) )
 
 #define ASSERT_HR_OK( hr ) CI_ASSERT_MSG( hr == S_OK, hresultToString( hr ) )
 
@@ -370,7 +372,7 @@ void WasapiAudioClientImpl::initAudioClient( const DeviceRef &device, size_t num
 	hr = mAudioClient->GetDevicePeriod( &defaultDevicePeriod, &minDevicePeriod );
 	ASSERT_HR_OK( hr );
 
-	CI_LOG_I( "device: " << device->getName() << ", default device period: " << defaultDevicePeriod / 10000.0 << "ms, min device period: " << minDevicePeriod / 10000.0 << "ms" );
+	LOG_AUDIOCLIENT( "device: " << device->getName() << ", default device period: " << defaultDevicePeriod / 10000.0 << "ms, min device period: " << minDevicePeriod / 10000.0 << "ms" );
 
 	::REFERENCE_TIME requestedDuration = framesToHundredNanoSeconds( mAudioClientNumFrames, sampleRate );
 	if( requestedDuration < minDevicePeriod ) {
@@ -387,7 +389,7 @@ void WasapiAudioClientImpl::initAudioClient( const DeviceRef &device, size_t num
 
 		initializeSucceeded = tryInit( requestedDuration, wfx.Format, immDevice.get(), eventDriven );
 		if( initializeSucceeded ) {
-			CI_LOG_I( "Initialize() succeeded with WAVEFORMATEX: " << waveFormatToString( wfx ) );
+			LOG_AUDIOCLIENT( "Initialize() succeeded with WAVEFORMATEX: " << waveFormatToString( wfx ) );
 
 			mNumChannels = wfx.Format.nChannels;
 			mSampleType = supportedFormats.first.mSampleType;
@@ -415,11 +417,11 @@ void WasapiAudioClientImpl::initAudioClient( const DeviceRef &device, size_t num
 	mAudioClientNumFrames = actualNumFrames; // update with the actual size
 
 	if( device->getFramesPerBlock() != actualNumFrames ) {
-		CI_LOG_I( "GetBufferSize returned " << actualNumFrames << " frames, updating DeviceInfo.mFramesPerBlock." );
+		LOG_AUDIOCLIENT( "GetBufferSize returned " << actualNumFrames << " frames, updating DeviceInfo.mFramesPerBlock." );
 		manager->updateActualFramesPerBlock( device, actualNumFrames );
 	}
 
-	CI_LOG_I( "init complete. mAudioClientNumFrames: " << mAudioClientNumFrames );
+	LOG_AUDIOCLIENT( "init complete. mAudioClientNumFrames: " << mAudioClientNumFrames );
 }
 
 // ----------------------------------------------------------------------------------------------------
