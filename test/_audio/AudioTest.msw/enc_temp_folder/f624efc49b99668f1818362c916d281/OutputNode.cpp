@@ -131,9 +131,13 @@ size_t OutputDeviceNode::getOutputSampleRate()
 
 size_t OutputDeviceNode::getOutputFramesPerBlock()
 {
+	// TODO: try calculating this only after deviceParamsWill change() is called
+	// - but OutputDeviceNode still needs to be able to mark this value as dirty
 	if( mOutputFramesPerBlockDirty ) {
 		mOutputFramesPerBlock = getDevice()->getFramesPerBlock();
 		if( ! isPowerOf2( mOutputFramesPerBlock ) ) {
+			// TODO: is it OK to use the closest power of 2 instead?
+			// - could mean a much smaller buffer, ex if device asks for 1056 samples use a 1024 size buffer instead of 2048
 			mOutputFramesPerBlock = nextPowerOf2( static_cast<uint32_t>( mOutputFramesPerBlock ) );
 		}
 		mOutputFramesPerBlockDirty = false;
