@@ -81,7 +81,7 @@ bool OutputNode::checkNotClipping()
 // ----------------------------------------------------------------------------------------------------
 
 OutputDeviceNode::OutputDeviceNode( const DeviceRef &device, const Format &format )
-	: OutputNode( format ), mDevice( device )
+	: OutputNode( format ), mDevice( device ), mOutputFramesPerBlockDirty( true )
 {
 	if( ! mDevice ) {
 		string errorMsg = "Empty DeviceRef.";
@@ -110,6 +110,7 @@ OutputDeviceNode::OutputDeviceNode( const DeviceRef &device, const Format &forma
 
 void OutputDeviceNode::deviceParamsWillChange()
 {
+	mOutputFramesPerBlockDirty = true;
 	mWasEnabledBeforeParamsChange = isEnabled();
 
 	getContext()->disable();
@@ -121,6 +122,28 @@ void OutputDeviceNode::deviceParamsDidChange()
 	getContext()->initializeAllNodes();
 
 	getContext()->setEnabled( mWasEnabledBeforeParamsChange );
+}
+
+size_t OutputDeviceNode::getOutputSampleRate()
+{ 
+	return getDevice()->getSampleRate();
+}
+
+size_t OutputDeviceNode::getOutputFramesPerBlock()
+{
+#if 1
+	if( mOutputFramesPerBlockDirty ) {
+		mOutputFramesPerBlock = getDevice()->getFramesPerBlock();
+		//if( ! isPowerOf2( mOutputFramesPerBlock ) ) {
+		//	mOutputFramesPerBlock = nextPowerOf2( static_cast<uint32_t>( mOutputFramesPerBlock ) );
+		//}
+		mOutputFramesPerBlockDirty = false;
+	}
+	
+	return mOutputFramesPerBlock;
+#else
+	return 512;
+#endif
 }
 
 string OutputDeviceNode::getName() const
